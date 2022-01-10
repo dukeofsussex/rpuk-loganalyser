@@ -1,0 +1,48 @@
+{
+  "name": "rpuk-fundanalyser",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "start": "sirv public --no-clear",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "lint": "eslint --ext .js,.ts,.svelte src",
+    "lint:fix": "eslint --ext .js,.ts,.svelte --fix src",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@rollup/plugin-typescript": "^8.3.0",
+    "@tsconfig/svelte": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "eslint": "^8.6.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^16.1.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-svelte3": "^3.3.0",
+    "husky": "^7.0.4",
+    "postcss": "^8.4.5",
+    "postcss-load-config": "^3.1.1",
+    "rollup": "^2.63.0",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-livereload": "^2.0.5",
+    "rollup-plugin-svelte": "^7.1.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "sass": "^1.47.0",
+    "sirv-cli": "^2.0.1",
+    "svelte": "^3.45.0",
+    "svelte-check": "^2.2.12",
+    "svelte-preprocess": "^4.10.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {
+    "@fortawesome/free-regular-svg-icons": "^5.15.4",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "bulma": "^0.9.3",
+    "svelte-fa": "^2.4.0"
+  }
+}

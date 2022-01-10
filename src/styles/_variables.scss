@@ -1,0 +1,129 @@
+@import "bulma/sass/utilities/_all";
+
+$orange:       #ff470f;
+$yellow:       #ffe08a;
+$green:        #34a126;
+$turquoise:    #44d3bd;
+$cyan:         #3e8ed0;
+$blue:         #485fc7;
+$purple:       #b86bff;
+$red:          #cf1f1f;
+
+$primary: $turquoise;
+$primary-invert: $black;
+
+$info: $cyan;
+$success: $green;
+$warning: $yellow;
+$danger: $red;
+
+$background: #353a40;
+$background-dark: #2a2e33;
+$background-light: #4d4d4d;
+
+$scheme-main: $background-light;
+
+$text: #c3c3c3;
+$text-light: lighten($text, 5%);
+$text-strong: lighten($text, 15%);
+
+$border: lighten($background, 30%);
+$border-hover: lighten($background, 50%);
+$border-light: lighten($background, 40%);
+$border-light-hover: lighten($background, 60%);
+
+$link: $blue;
+$link-hover: $text-light;
+$link-hover-border: $border;
+$link-focus: $text-light;
+$link-focus-border: $border;
+$link-active: $text-strong;
+$link-active-border: $border-light;
+
+$colors: mergeColorMaps(("white": ($white, $black), "black": ($black, $white), "light": ($light, $light-invert), "dark": ($dark, $dark-invert), "primary": ($primary, $primary-invert, $primary-light, $primary-dark), "link": ($link, $link-invert, $link-light, $link-dark), "info": ($info, $info-invert, $info-light, $info-dark), "success": ($success, $success-invert, $success-light, $success-dark), "warning": ($warning, $warning-invert, $warning-light, $warning-dark), "danger": ($danger, $danger-invert, $danger-light, $danger-dark)), $custom-colors);
+
+$body-background-color: $background;
+$body-overflow-y: auto;
+
+$body-color: $text;
+
+$button-color: $text-light;
+
+$button-hover-color: $text-strong;
+$button-hover-border-color: $border-hover;
+
+$button-focus-color: $text-strong;
+$button-focus-border-color: $border-hover;
+
+$button-active-color: $text-strong;
+$button-active-border-color: $border-hover;
+
+$button-disabled-background-color: $background-dark;
+$button-disabled-border-color: $border;
+
+$button-static-color: $text-light;
+$button-static-background-color: $background;
+$button-static-border-color: $border;
+
+$table-color: $text-strong;
+$table-background-color: $background;
+
+$table-head-background-color: $background-dark;
+
+$table-row-hover-background-color: lighten($background, 5%);
+
+$tag-background-color: $background;
+$tag-color: $text-light;
+
+$input-color: $text-light;
+$input-background-color: $background-light;
+
+$input-hover-color: $text-strong;
+$input-hover-border-color: $border-hover;
+
+$input-focus-color: $text-strong;
+$input-focus-border-color: $border-hover;
+
+$input-icon-color: $text-light;
+$input-icon-active-color: $text-strong;
+
+$modal-card-head-background-color: $background-dark;
+
+$modal-card-title-color: $text-strong;
+
+$modal-card-body-background-color: $background;
+
+$pagination-color: $text;
+
+$pagination-hover-color: $text-light;
+$pagination-hover-border-color: $border-hover;
+
+$pagination-focus-color: $text-light;
+$pagination-focus-border-color: $border-hover;
+
+$pagination-disabled-color: $text;
+$pagination-disabled-background-color: $background-dark;
+$pagination-disabled-border-color: $background-light;
+
+$pagination-current-color: $primary-invert;
+$pagination-current-background-color: $primary;
+$pagination-current-border-color: $primary;
+
+$pagination-ellipsis-color: $text-light;
+
+$panel-item-border: 1px solid $border;
+
+$panel-heading-background-color: $background-dark;
+$panel-heading-color: $text-strong;
+
+$panel-list-item-color: $text-light;
+$panel-list-item-hover-color: $text-strong;
+
+$panel-block-color: $text-strong;
+$panel-block-hover-background-color: lighten($background, 5%);
+$panel-block-active-border-left-color: $link;
+$panel-block-active-color: $text-strong;
+$panel-block-active-icon-color: $turquoise;
+
+$panel-icon-color: $text-light;
+
