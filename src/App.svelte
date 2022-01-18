@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { faBox, faCalendar, faIdCard } from '@fortawesome/free-solid-svg-icons';
+  import {
+    faBox,
+    faCalendar,
+    faExclamationTriangle,
+    faIdCard,
+  } from '@fortawesome/free-solid-svg-icons';
+  import FaIcon from 'svelte-fa';
   import LogFilter from './LogFilter.svelte';
   import LogViewer from './LogViewer.svelte';
   import Octocat from './Octocat.svelte';
@@ -8,7 +14,7 @@
 
 <main>
   <Octocat />
-  <section class="columns">
+  <section class="columns is-hidden-touch">
     <div class="column">
       <LogFilter filter={'date'}
           icon={faCalendar}
@@ -33,6 +39,17 @@
             icon={faBox}
             title="Items" />
       </div>
+    </div>
+  </section>
+  <section class="columns is-hidden-desktop">
+    <div class="column is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+      <span class="icon is-large has-text-warning">
+        <FaIcon icon={faExclamationTriangle}
+            size="3x" />
+      </span>
+      <h4 class="is-size-4 has-text-centered">
+        Going to need a larger screen for this one, bossman!
+      </h4>
     </div>
   </section>
 </main>
