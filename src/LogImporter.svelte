@@ -52,11 +52,12 @@
 
 <Modal bind:this="{modal}"
     title="Import fund logs">
+
   <textarea class="textarea"
-    rows="25"
-    placeholder="Raw log"
-    slot="content"
-    bind:value={raw} />
+      rows="25"
+      placeholder="Copy the highlighted rows from your fund log here..."
+      slot="content"
+      bind:value={raw} />
   <div slot="footer">
     <button class="button is-primary is-outlined"
         disabled={!raw}
