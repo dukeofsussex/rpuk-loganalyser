@@ -77,7 +77,7 @@
 <div class="is-flex is-align-items-center is-justify-content-space-between">
   <button class="button is-static">
     Showing logs
-    <b>{offset + 1}</b>
+    <b>{sortedLogs.length ? offset + 1 : 0}</b>
     -
     <b>{offset + sortedLogs.length}</b>
     of
