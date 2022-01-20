@@ -59,6 +59,7 @@
 
   .columns, .column {
     height: 100vh;
+    margin-bottom: 0 !important;
   }
 
   .half {
