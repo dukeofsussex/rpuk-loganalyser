@@ -13,28 +13,24 @@
 
   function importLogs() {
     const lines = raw.split('\n');
+    const rows = lines.filter((x) => x.length > 0 && !x.trim().startsWith('Name'))
+      .map((log) => {
+        const parts = log.trim().split('\t');
+        const nameParts = parts[0].split(' ');
+        const digits = parts[1].match(/(\d+)/g);
+        const negative = parts[1].startsWith('-');
+        const fulldate = new Date(parts[3].replace(/st|nd|rd|th/, ''));
 
-    if (lines[0].trim().startsWith('Name')) {
-      lines.shift();
-    }
-
-    const rows = lines.map((log) => {
-      const parts = log.trim().split('\t');
-      const nameParts = parts[0].split(' ');
-      const digits = parts[1].match(/(\d+)/g);
-      const negative = parts[1].startsWith('-');
-      const fulldate = new Date(parts[3].replace(/st|nd|rd|th/, ''));
-
-      return {
-        date: fulldate.toISOString().split('T')[0],
-        employee: nameParts.slice(-2).join(' '),
-        fulldate,
-        item: parts[2],
-        quantity: parseInt(negative ? (-digits[0]).toString() : digits[0], 10),
-        rank: nameParts.slice(0, -2).join(' '),
-        value: parseInt(negative ? (-digits[1]).toString() : digits[1], 10),
-      };
-    });
+        return {
+          date: fulldate.toISOString().split('T')[0],
+          employee: nameParts.slice(-2).join(' '),
+          fulldate,
+          item: parts[2],
+          quantity: parseInt(negative ? (-digits[0]).toString() : digits[0], 10),
+          rank: nameParts.slice(0, -2).join(' '),
+          value: parseInt(negative ? (-digits[1]).toString() : digits[1], 10),
+        };
+      });
 
     logs.update(($logs) => $logs.concat(rows));
     clear();
