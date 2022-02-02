@@ -3,11 +3,17 @@
   import { faCheckSquare, faSearch } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
   import { quid } from './actions';
-  import { balances, filters, type Filter } from './storage';
+  import {
+    balances,
+    filters,
+    quantities,
+    type Filter,
+  } from './storage';
   import { stringCompareFn } from './utils';
 
   export let filter: Filter;
   export let icon: IconDefinition;
+  export let quantifiable = false;
   export let sortAsc = true;
   export let title = '';
 
@@ -93,12 +99,19 @@
             {item}
           </slot>
         </span>
-        {#if $balances[filter].has(item)}
-          <span class="tag"
-              class:is-danger={$balances[filter].get(item) < 0}
-              class:is-success={$balances[filter].get(item) > 0}
-              use:quid={$balances[filter].get(item)}/>
-        {/if}
+        <div class="tags has-addons">
+          {#if quantifiable && $quantities.has(item)}
+            <span class="tag">
+              {($quantities.get(item) > 0 ? '+' : '')}{$quantities.get(item)}
+            </span>
+          {/if}
+          {#if $balances[filter].has(item)}
+            <span class="tag"
+                class:is-danger={$balances[filter].get(item) < 0}
+                class:is-success={$balances[filter].get(item) > 0}
+                use:quid={$balances[filter].get(item)}/>
+          {/if}
+        </div>
       </a>
     {/each}
     {#if !displayData.length && query}

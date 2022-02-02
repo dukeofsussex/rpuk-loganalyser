@@ -26,6 +26,7 @@ export const filters = writable<Filters>({
   employee: new Map(),
   item: new Map(),
 });
+export const quantities = writable<Map<string, number>>(new Map());
 
 function logSubscribe(data: Filters[Filter], value: string) {
   if (data.has(value)) {
@@ -59,19 +60,26 @@ function filteredLogSubscribe(data: Balances[Filter], key: string, value: number
 }
 
 filteredLogs.subscribe((SubFilLogs) => {
-  balances.update((f) => {
-    /* eslint-disable no-param-reassign */
-    f.date = new Map();
-    f.employee = new Map();
-    f.item = new Map();
-    /* eslint-enable no-param-reassign */
+  balances.update((b) => {
+    quantities.update((q) => {
+      /* eslint-disable no-param-reassign */
+      b.date = new Map();
+      b.employee = new Map();
+      b.item = new Map();
+      q = new Map();
+      /* eslint-enable no-param-reassign */
 
-    for (let i = 0; i < SubFilLogs.length; i += 1) {
-      const log = SubFilLogs[i];
-      filteredLogSubscribe(f.date, log.date, log.value);
-      filteredLogSubscribe(f.employee, log.employee, log.value);
-      filteredLogSubscribe(f.item, log.item, log.value);
-    }
-    return f;
+      for (let i = 0; i < SubFilLogs.length; i += 1) {
+        const log = SubFilLogs[i];
+        filteredLogSubscribe(b.date, log.date, log.value);
+        filteredLogSubscribe(b.employee, log.employee, log.value);
+        filteredLogSubscribe(b.item, log.item, log.value);
+        filteredLogSubscribe(q, log.item, log.quantity);
+      }
+
+      return q;
+    });
+
+    return b;
   });
 });
