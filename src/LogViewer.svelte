@@ -6,6 +6,7 @@
     faSortUp,
   } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
+  import Help from './Help.svelte';
   import LogImporter from './LogImporter.svelte';
   import Pagination from './Pagination.svelte';
   import { datetime, quid } from './actions';
@@ -83,7 +84,10 @@
     of
     <b>{$filteredLogs.length}</b>
   </button>
-  <LogImporter />
+  <span>
+    <LogImporter />
+    <Help />
+  </span>
   <div class="field has-addons">
     <p class="control is-expanded">
       <button class="button is-static">
