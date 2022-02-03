@@ -36,8 +36,8 @@
       </div>
       <div class="half pt-1">
         <LogFilter filter={'item'}
+            hasChanges={true}
             icon={faBox}
-            quantifiable={true}
             title="Items" />
       </div>
     </div>

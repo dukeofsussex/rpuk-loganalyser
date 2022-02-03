@@ -11,6 +11,12 @@ export interface Log {
   value: number;
 }
 
+export interface Change {
+  positive: number;
+  negative: number;
+  diff: number;
+}
+
 export type Filter = 'date' | 'employee' | 'item';
 export type Filters = Record<Filter, Map<string, boolean>>;
 export type Balances = Record<Filter, Map<string, number>>;
@@ -26,7 +32,7 @@ export const filters = writable<Filters>({
   employee: new Map(),
   item: new Map(),
 });
-export const quantities = writable<Map<string, number>>(new Map());
+export const changes = writable<Map<string, Change>>(new Map());
 
 function logSubscribe(data: Filters[Filter], value: string) {
   if (data.has(value)) {
@@ -61,12 +67,12 @@ function filteredLogSubscribe(data: Balances[Filter], key: string, value: number
 
 filteredLogs.subscribe((SubFilLogs) => {
   balances.update((b) => {
-    quantities.update((q) => {
+    changes.update((c) => {
       /* eslint-disable no-param-reassign */
       b.date = new Map();
       b.employee = new Map();
       b.item = new Map();
-      q = new Map();
+      c = new Map();
       /* eslint-enable no-param-reassign */
 
       for (let i = 0; i < SubFilLogs.length; i += 1) {
@@ -74,10 +80,15 @@ filteredLogs.subscribe((SubFilLogs) => {
         filteredLogSubscribe(b.date, log.date, log.value);
         filteredLogSubscribe(b.employee, log.employee, log.value);
         filteredLogSubscribe(b.item, log.item, log.value);
-        filteredLogSubscribe(q, log.item, log.quantity);
+
+        const key = log.quantity > 0 ? 'positive' : 'negative';
+        const change = c.get(log.item) || { positive: 0, negative: 0, diff: 0 };
+        change[key] += log.quantity;
+        change.diff = change.positive + change.negative;
+        c.set(log.item, change);
       }
 
-      return q;
+      return c;
     });
 
     return b;

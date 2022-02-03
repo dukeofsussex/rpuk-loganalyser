@@ -5,14 +5,14 @@
   import {
     balances,
     filters,
-    quantities,
+    changes,
     type Filter,
   } from './storage';
   import { stringCompareFn } from './utils';
 
   export let filter: Filter;
   export let icon: IconDefinition;
-  export let quantifiable = false;
+  export let hasChanges = false;
   export let sortAsc = true;
   export let title = '';
 
@@ -90,10 +90,20 @@
           </slot>
         </span>
         <div class="tags has-addons">
-          {#if quantifiable && $quantities.has(option)}
-            <span class="tag">
-              {($quantities.get(option) > 0 ? '+' : '')}{$quantities.get(option)}
-            </span>
+          {#if hasChanges && $changes.has(option)}
+            {#if $changes.get(option).positive && $changes.get(option).negative}
+              <span class="tag has-text-success">
+                +{$changes.get(option).positive}
+              </span>
+              <span class="tag has-text-danger">
+                {$changes.get(option).negative}
+              </span>
+            {/if}
+            {#if $changes.get(option).diff}
+              <span class="tag is-dark">
+                {($changes.get(option).diff > 0 ? '+' : '')}{$changes.get(option).diff}
+              </span>
+            {/if}
           {/if}
           {#if $balances[filter].has(option)}
             <span class="tag"
