@@ -21,8 +21,8 @@
           sortAsc={false}
           title="Dates">
         <span slot="name"
-            use:datetime={[new Date(item), { dateStyle: 'long' }]}
-            let:item />
+            use:datetime={[new Date(option), { dateStyle: 'long' }]}
+            let:option />
       </LogFilter>
     </div>
     <div class="column is-half is-flex is-flex-direction-column">

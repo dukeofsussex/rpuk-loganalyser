@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { faSquare, type IconDefinition } from '@fortawesome/free-regular-svg-icons';
-  import { faCheckSquare, faSearch } from '@fortawesome/free-solid-svg-icons';
+  import { faCheckSquare, faSearch, type IconDefinition } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
   import { quid } from './actions';
   import {
@@ -31,20 +30,19 @@
     });
   }
 
-  function toggleAll() {
+  function toggleAll(show: boolean) {
     filters.update((f) => {
       filterKeys.forEach((key) => {
-        f[filter].set(key, true);
+        f[filter].set(key, show);
       });
       return f;
     });
   }
 
-  function toggleNone() {
+  function select(option: string) {
     filters.update((f) => {
-      filterKeys.forEach((key) => {
-        f[filter].set(key, false);
-      });
+      toggleAll(false);
+      f[filter].set(option, true);
       return f;
     });
   }
@@ -67,49 +65,41 @@
       </p>
       <p class="control">
         <button class="button"
-            on:click={toggleAll}>
+            on:click={() => toggleAll(true)}>
           <span class="icon is-small">
             <FaIcon icon={faCheckSquare} />
           </span>
           <span>All</span>
         </button>
       </p>
-      <p class="control">
-        <button class="button"
-            on:click={toggleNone}>
-          <span class="icon is-small">
-            <FaIcon icon={faSquare} />
-          </span>
-          <span>None</span>
-        </button>
-      </p>
     </div>
   </div>
   <div class="panel-group is-flex-shrink-1">
-    {#each displayData as item}
+    {#each displayData as option}
       <!-- svelte-ignore a11y-missing-attribute -->
       <a class="panel-block is-justified-content-space-between is-unselectable"
-          class:is-active="{$filters[filter].get(item) && $balances[filter].has(item)}"
-          on:click={() => toggle(item)}>
+          class:is-active="{$filters[filter].get(option) && $balances[filter].has(option)}"
+          on:click={() => toggle(option)}
+          on:dblclick={() => select(option)}>
         <span class="panel-icon">
           <FaIcon {icon} />
         </span>
         <span class="is-flex-grow-1">
-          <slot name="name" {item}>
-            {item}
+          <slot name="name" {option}>
+            {option}
           </slot>
         </span>
         <div class="tags has-addons">
-          {#if quantifiable && $quantities.has(item)}
+          {#if quantifiable && $quantities.has(option)}
             <span class="tag">
-              {($quantities.get(item) > 0 ? '+' : '')}{$quantities.get(item)}
+              {($quantities.get(option) > 0 ? '+' : '')}{$quantities.get(option)}
             </span>
           {/if}
-          {#if $balances[filter].has(item)}
+          {#if $balances[filter].has(option)}
             <span class="tag"
-                class:is-danger={$balances[filter].get(item) < 0}
-                class:is-success={$balances[filter].get(item) > 0}
-                use:quid={$balances[filter].get(item)}/>
+                class:is-danger={$balances[filter].get(option) < 0}
+                class:is-success={$balances[filter].get(option) > 0}
+                use:quid={$balances[filter].get(option)}/>
           {/if}
         </div>
       </a>
