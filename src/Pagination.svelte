@@ -26,6 +26,8 @@
   }
 
   // eslint-disable-next-line no-sequences, @typescript-eslint/no-unused-expressions
+  $: perPage, goToPage(1);
+  // eslint-disable-next-line no-sequences, @typescript-eslint/no-unused-expressions
   $: total, goToPage(1);
 </script>
 <nav class="pagination is-centered">
