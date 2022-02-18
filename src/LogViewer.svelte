@@ -10,7 +10,7 @@
   import LogImporter from './LogImporter.svelte';
   import Pagination from './Pagination.svelte';
   import { datetime, quid } from './actions';
-  import { filteredLogs } from './storage';
+  import { filteredLogs, type Log } from './storage';
   import { numberCompareFn, stringCompareFn } from './utils';
 
   interface SortingColumn {
@@ -19,6 +19,12 @@
     compareFn: (a: any, b: any, asc: boolean) => number;
   }
 
+  const GROUPING_COLOURS = 2;
+  const grouping = {
+    date: new Date(),
+    employee: '',
+    colourIndex: 0,
+  };
   const sortingColumns: SortingColumn[] = [{
     name: 'Rank',
     compareFn: stringCompareFn,
@@ -59,6 +65,18 @@
 
     return icon;
   }, {});
+
+  function group(log: Log) {
+    if (log.employee !== grouping.employee
+        || Math.abs(log.fulldate.valueOf() - grouping.date.valueOf()) > 60000) {
+      grouping.employee = log.employee;
+      grouping.colourIndex = (grouping.colourIndex + 1) % GROUPING_COLOURS;
+    }
+
+    grouping.date = log.fulldate;
+
+    return `group-${grouping.colourIndex}`;
+  }
 
   function onPaginate(event: CustomEvent<number>) {
     offset = event.detail * limit;
@@ -130,7 +148,7 @@
       </thead>
       <tbody>
         {#each sortedLogs as log}
-          <tr>
+          <tr class={group(log)}>
             <td title={log.rank}>{log.rank.match(/(\b\w)/g).join('')}</td>
             <td>{log.employee}</td>
             <td>{(log.quantity > 0 ? '+' : '')}{log.quantity}</td>
@@ -158,6 +176,8 @@
     on:paginate={onPaginate} />
 
 <style lang="scss">
+  @import './styles/_variables.scss';
+
   b {
     margin: 5px;
   }
@@ -173,10 +193,17 @@
     thead {
       position: sticky;
       top: 0;
-
       td, th {
         border-width: 0 0 1px;
       }
+    }
+
+    tr.group-0 {
+      background-color: darken($table-background-color, 2.5%);
+    }
+
+    tr.group-1 {
+      background-color: darken($table-background-color, 7.5%);
     }
   }
 </style>
