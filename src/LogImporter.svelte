@@ -20,15 +20,16 @@
         const digits = parts[1].match(/(\d+)/g);
         const negative = parts[1].startsWith('-');
         const fulldate = new Date(parts[3].replace(/st|nd|rd|th/, ''));
+        const isInsuranceClaim = log.includes('Insurance');
 
         return {
           date: fulldate.toISOString().split('T')[0],
           employee: nameParts.slice(-2).join(' '),
           fulldate,
           item: parts[2],
-          quantity: parseInt(negative ? (-digits[0]).toString() : digits[0], 10),
+          quantity: isInsuranceClaim ? -1 : -digits[0],
           rank: nameParts.slice(0, -2).join(' '),
-          value: parseInt(negative ? (-digits[1]).toString() : digits[1], 10),
+          value: isInsuranceClaim ? -digits[0] : parseInt(`${(negative ? '-' : '')}${digits[1]}`, 10),
         };
       });
 
