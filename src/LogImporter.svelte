@@ -27,7 +27,7 @@
           employee: nameParts.slice(-2).join(' '),
           fulldate,
           item: parts[2],
-          quantity: isInsuranceClaim ? -1 : -digits[0],
+          quantity: isInsuranceClaim ? -1 : parseInt(`${(negative ? '-' : '')}${digits[0]}`, 10),
           rank: nameParts.slice(0, -2).join(' '),
           value: isInsuranceClaim ? -digits[0] : parseInt(`${(negative ? '-' : '')}${digits[1]}`, 10),
         };
