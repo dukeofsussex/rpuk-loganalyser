@@ -21,7 +21,8 @@
   $: filterKeys = [...$filters[filter].keys()];
   $: displayData = (query
     ? filterKeys.filter((x) => x.toLowerCase().indexOf(query.toLowerCase()) !== -1)
-    : filterKeys).sort((a: string, b: string) => stringCompareFn(a, b, sortAsc));
+    : filterKeys)
+    .sort((a: string, b: string) => stringCompareFn(a, b, sortAsc));
 
   function toggle(option: string) {
     filters.update((f) => {
@@ -131,6 +132,14 @@
 <style lang="scss">
   .panel {
     max-height: 100%;
+  }
+
+  .panel-block:not(.is-active) {
+    color: #999;
+
+    .panel-icon {
+      color: inherit;
+    }
   }
 
   .panel-group {
