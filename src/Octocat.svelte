@@ -4,7 +4,7 @@
       viewBox="0 0 250 250"
       style="fill: #fff; position: absolute; top: 0; border: 0; right: 0;"
       aria-hidden="true">
-    <a href="https://github.com/dukeofsussex/rpuk-fundanalyser"
+    <a href="https://github.com/dukeofsussex/rpuk-loganalyser"
         style="pointer-events: auto"
         target="_blank">
       <path d="M0,0 L250,250 L250,0 Z" />

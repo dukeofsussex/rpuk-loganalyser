@@ -101,7 +101,9 @@
               </span>
             {/if}
             {#if $changes.get(option).diff}
-              <span class="tag is-dark">
+              <span class="tag is-dark"
+                class:is-danger={$changes.get(option).diff < 0 && $balances[filter].get(option) === 0}
+                class:is-success={$changes.get(option).diff > 0 && $balances[filter].get(option) === 0}>
                 {($changes.get(option).diff > 0 ? '+' : '')}{$changes.get(option).diff}
               </span>
             {/if}

@@ -13,25 +13,38 @@
 
   function importLogs() {
     const lines = raw.split('\n');
-    const rows = lines.filter((x) => x.length > 0 && !x.trim().startsWith('Name'))
-      .map((log) => {
-        const parts = log.trim().split('\t');
-        const nameParts = parts[0].split(' ');
-        const digits = parts[1].match(/(\d+)/g);
-        const negative = parts[1].startsWith('-');
-        const fulldate = new Date(parts[3].replace(/st|nd|rd|th/, ''));
-        const isVehicleEntry = !log.includes('£');
+    const rows = lines.reduce((all, line) => {
+      if (line.length === 0 || line.trim().startsWith('Name')) {
+        return all;
+      }
 
-        return {
-          date: fulldate.toISOString().split('T')[0],
-          employee: nameParts.slice(-2).join(' '),
-          fulldate,
-          item: parts[2],
-          quantity: isVehicleEntry ? -1 : parseInt(`${(negative ? '-' : '')}${digits[0]}`, 10),
-          rank: nameParts.slice(0, -2).join(' '),
-          value: isVehicleEntry ? -digits[0] : parseInt(`${(negative ? '-' : '')}${digits[1]}`, 10),
-        };
+      const parts = line.match(/(.*)\t(\+|-)\s*(\d+)(?:\s*\(£(\d+)\))?\t(.*)\t(.*)/);
+      const nameParts = parts[1].split(' ');
+      const fulldate = new Date(parts[parts.length - 1].replace(/st|nd|rd|th/, ''));
+      const negative = parts[2] === '-';
+
+      let quantity = parseInt(`${(negative ? '-' : '')}${parts[3]}`, 10);
+      let value = 0;
+
+      if (line.includes('£')) {
+        value = parseInt(`${(negative ? '-' : '')}${parts[4]}`, 10);
+      } else if (line.includes('Insurance')) {
+        quantity = -1;
+        value = -parts[3];
+      } else {
+        value = 0;
+      }
+
+      return all.concat({
+        date: fulldate.toISOString().split('T')[0],
+        employee: nameParts.slice(-2).join(' '),
+        fulldate,
+        item: parts[parts.length - 2],
+        quantity,
+        rank: nameParts.slice(0, -2).join(' '),
+        value,
       });
+    }, []);
 
     logs.update(($logs) => $logs.concat(rows));
     clear();
@@ -48,11 +61,11 @@
 </button>
 
 <Modal bind:this="{modal}"
-    title="Import fund logs">
+    title="Import logs">
 
   <textarea class="textarea"
       rows="25"
-      placeholder="Copy the highlighted rows from your fund log here..."
+      placeholder="Copy the highlighted rows from your log here..."
       slot="content"
       bind:value={raw} />
   <div slot="footer">

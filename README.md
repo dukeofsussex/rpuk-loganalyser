@@ -1,10 +1,10 @@
-# RPUK Fundanalyser
+# RPUK Loganalyser
 
-[![GitHub license](https://img.shields.io/github/license/dukeofsussex/rpuk-fundanalyser)](https://github.com/dukeofsussex/rpuk-fundanalyser/blob/master/LICENSE)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/dukeofsussex/rpuk-fundanalyser)
+[![GitHub license](https://img.shields.io/github/license/dukeofsussex/rpuk-loganalyser)](https://github.com/dukeofsussex/rpuk-loganalyser/blob/master/LICENSE)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/dukeofsussex/rpuk-loganalyser)
 [![RPUK Profile](https://img.shields.io/badge/RPUK-Duke%20of%20Sussex-green)](https://www.roleplay.co.uk/profile/70814-duke-of-sussex/)
 
-Import and analyse faction/group fund transactions for [RPUK FiveM](https://roleplay.co.uk).
+Import and analyse faction/group logs for [RPUK FiveM](https://roleplay.co.uk).
 
 ## Preview
 

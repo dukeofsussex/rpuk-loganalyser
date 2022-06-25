@@ -31,7 +31,7 @@
         What?
       </dt>
       <dd>
-        Utility to analyse faction/group funds. No more, no less.
+        Utility to analyse faction/group logs. No more, no less.
       </dd>
       <dt class="title is-5 mt-2 mb-2">
         Why?
@@ -57,7 +57,7 @@
       </dt>
       <dd>
         <ol class="is-upper-roman">
-          <li>Highlight and copy all rows in the fund log you want to import (table headers can also be imported as they are ignored).</li>
+          <li>Highlight and copy all rows in the log you want to import (table headers can also be imported as they are ignored).</li>
           <li>Click on "Import" at the top of this page.</li>
           <li>Paste the copied logs.</li>
           <li>Click on "Import".</li>

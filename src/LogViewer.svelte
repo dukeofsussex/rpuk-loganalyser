@@ -151,7 +151,10 @@
           <tr class={group(log)}>
             <td title={log.rank}>{log.rank.match(/(\b\w)/g).join('')}</td>
             <td>{log.employee}</td>
-            <td>{(log.quantity > 0 ? '+' : '')}{log.quantity}</td>
+            <td class:has-background-success={log.quantity > 0 && log.value === 0}
+                class:has-background-danger={log.quantity < 0 && log.value === 0}>
+              {(log.quantity > 0 ? '+' : '')}{log.quantity}
+            </td>
             <td class:has-background-success={log.value > 0}
                 class:has-background-danger={log.value < 0}
                 use:quid={log.value} />
