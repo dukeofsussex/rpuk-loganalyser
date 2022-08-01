@@ -28,7 +28,7 @@
 
       if (line.includes('£')) {
         value = parseInt(`${(negative ? '-' : '')}${parts[4]}`, 10);
-      } else if (line.includes('Insurance')) {
+      } else if (line.includes('Insurance') || line.includes('Purchase')) {
         quantity = -1;
         value = -parts[3];
       } else {
