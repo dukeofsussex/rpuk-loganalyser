@@ -41,8 +41,8 @@
     <div class="modal-background"
         on:click="{() => toggle(false)}"></div>
     <div class="modal-card"
-        in:fly="{{ duration: 500, y: -250 }}"
-        out:fly="{{ duration: 250, y: -250 }}">
+        in:fly="{{ duration: 500, y: -500 }}"
+        out:fly="{{ duration: 250, y: -500 }}">
       <header class="modal-card-head">
         <p class="modal-card-title">{title}</p>
         <button class="delete"

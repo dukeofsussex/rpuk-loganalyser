@@ -48,7 +48,8 @@
       <dd>
         <a class="has-text-primary"
             href="https://www.roleplay.co.uk/profile/70814-duke-of-sussex/"
-            target="_blank">
+            target="_blank"
+            rel="noopener noreferrer">
           Me
         </a>
       </dd>
@@ -70,7 +71,8 @@
       <dd>
         <a class="has-text-primary"
             href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-            target="_blank">
+            target="_blank"
+            rel="noopener noreferrer">
           Here you go
         </a>
         or click on the Octocat in the top right corner.

@@ -2,49 +2,109 @@
   import { faUpload } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
   import Modal from './Modal.svelte';
-  import { logs } from './storage';
+  import {
+    logs,
+    LogType,
+    logType,
+    type FundLog,
+    type Log,
+    type VehicleLog,
+  } from './storage';
 
+  const CombinedRegex = /(.*)\t(\+|-)\s*(\d+)(?:\s*\(£(\d+)\))?\t(.*)\t(.*)/;
+  const VehicleRegex = /(.*)\t(.*)\t(Retrieved|Stored)\t(.*)/;
+
+  let error: string;
   let modal: Modal;
   let raw = '';
 
   function clear() {
+    error = null;
     raw = '';
   }
 
   function importLogs() {
     const lines = raw.split('\n');
-    const rows = lines.reduce((all, line) => {
-      if (line.length === 0 || line.trim().startsWith('Name')) {
-        return all;
+    const rows: (Log | FundLog | VehicleLog)[] = [];
+    error = null;
+
+    for (let i = 0; i < lines.length; i += 1) {
+      const line = lines[i];
+
+      // Skip blank lines and table headers
+      if (line.trim().length === 0 || line.trim().startsWith('Name')) {
+        // eslint-disable-next-line no-continue
+        continue;
       }
 
-      const parts = line.match(/(.*)\t(\+|-)\s*(\d+)(?:\s*\(£(\d+)\))?\t(.*)\t(.*)/);
-      const nameParts = parts[1].split(' ');
+      if (!$logType) {
+        if (line.includes('£')) {
+          $logType = LogType.Fund;
+        } else if (VehicleRegex.test(line)) {
+          $logType = LogType.Vehicle;
+        } else if (CombinedRegex.test(line)) {
+          $logType = LogType.Default;
+        } else {
+          error = 'Unable to determine log type!';
+          break;
+        }
+      }
+
+      const parts = line.match($logType === LogType.Vehicle ? VehicleRegex : CombinedRegex);
+
+      // Different log type
+      if (!parts) {
+        error = 'You cannot combine different types of logs!';
+        break;
+      }
+
       const fulldate = new Date(parts[parts.length - 1].replace(/st|nd|rd|th/, ''));
-      const negative = parts[2] === '-';
+      const dateData = {
+        date: fulldate.toLocaleDateString(),
+        fulldate,
+      };
 
-      let quantity = parseInt(`${(negative ? '-' : '')}${parts[3]}`, 10);
-      let value = 0;
+      if ($logType === LogType.Vehicle) {
+        (rows as VehicleLog[]).push({
+          ...dateData,
+          employee: parts[1],
+          quantity: parts[3] === 'Retrieved' ? -1 : 1,
+          vehicle: parts[2],
+        });
 
-      if (line.includes('£')) {
-        value = parseInt(`${(negative ? '-' : '')}${parts[4]}`, 10);
-      } else if (line.includes('Insurance') || line.includes('Purchase')) {
-        quantity = -1;
-        value = -parts[3];
-      } else {
-        value = 0;
+        // eslint-disable-next-line no-continue
+        continue;
       }
 
-      return all.concat({
-        date: fulldate.toISOString().split('T')[0],
+      const nameParts = parts[1].split(' ');
+      const negative = parts[2] === '-';
+      const quantity = line.includes('Insurance') || line.includes('Purchase')
+        ? -1
+        : parseInt(`${(negative ? '-' : '')}${parts[3]}`, 10);
+
+      const row: Log = {
+        ...dateData,
         employee: nameParts.slice(-2).join(' '),
-        fulldate,
         item: parts[parts.length - 2],
         quantity,
         rank: nameParts.slice(0, -2).join(' '),
-        value,
-      });
-    }, []);
+      };
+
+      if ($logType === LogType.Fund) {
+        (rows as FundLog[]).push({
+          ...row,
+          value: line.includes('Insurance') || line.includes('Purchase')
+            ? -parts[3]
+            : parseInt(`${(negative ? '-' : '')}${parts[4]}`, 10),
+        });
+      } else {
+        (rows as Log[]).push(row);
+      }
+    }
+
+    if (error) {
+      return;
+    }
 
     logs.update(($logs) => $logs.concat(rows));
     clear();
@@ -63,11 +123,20 @@
 <Modal bind:this="{modal}"
     title="Import logs">
 
-  <textarea class="textarea"
+  <div slot="content">
+    {#if error}
+      <article class="message is-danger">
+        <div class="message-body p-3">
+          {error}
+        </div>
+      </article>
+    {/if}
+    <textarea class="textarea"
+      class:is-danger={error}
       rows="25"
       placeholder="Copy the highlighted rows from your log here..."
-      slot="content"
       bind:value={raw} />
+  </div>
   <div slot="footer">
     <button class="button is-primary is-outlined"
         disabled={!raw}
@@ -78,6 +147,7 @@
       <span>Import</span>
     </button>
     <button class="button is-secondary"
+        disabled={!raw}
         on:click={clear}>
       Clear
     </button>

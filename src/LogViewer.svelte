@@ -10,7 +10,12 @@
   import LogImporter from './LogImporter.svelte';
   import Pagination from './Pagination.svelte';
   import { datetime, quid } from './actions';
-  import { filteredLogs, type Log } from './storage';
+  import {
+    filteredLogs,
+    LogType,
+    logType,
+    type LogCommon,
+  } from './storage';
   import { numberCompareFn, stringCompareFn } from './utils';
 
   interface SortingColumn {
@@ -25,37 +30,64 @@
     employee: '',
     colourIndex: 0,
   };
-  const sortingColumns: SortingColumn[] = [{
-    name: 'Rank',
-    compareFn: stringCompareFn,
-  }, {
-    name: 'Employee',
-    compareFn: stringCompareFn,
-  }, {
-    name: 'Quantity',
-    compareFn: numberCompareFn,
-  }, {
-    name: 'Value',
-    compareFn: numberCompareFn,
-  }, {
-    name: 'Item',
-    compareFn: stringCompareFn,
-  }, {
-    name: 'Date',
-    prop: 'fulldate',
-    compareFn: numberCompareFn,
-  }];
+  const sortingColumns: SortingColumn[] = [
+    ...($logType !== LogType.Vehicle
+      ? [{
+        name: 'Rank',
+        compareFn: stringCompareFn,
+      }]
+      : []),
+    {
+      name: 'Employee',
+      compareFn: stringCompareFn,
+    },
+    ...($logType !== LogType.Vehicle
+      ? [{
+        name: 'Quantity',
+        compareFn: numberCompareFn,
+      }]
+      : []),
+    ...($logType === LogType.Fund
+      ? [{
+        name: 'Value',
+        compareFn: numberCompareFn,
+      }]
+      : []),
+    ...($logType !== LogType.Vehicle
+      ? [{
+        name: 'Item',
+        compareFn: stringCompareFn,
+      }]
+      : []),
+    ...($logType === LogType.Vehicle
+      ? [{
+        name: 'Action',
+        prop: 'quantity',
+        compareFn: numberCompareFn,
+      }, {
+        name: 'Vehicle',
+        compareFn: stringCompareFn,
+      }]
+      : []),
+    {
+      name: 'Date',
+      prop: 'fulldate',
+      compareFn: numberCompareFn,
+    },
+  ];
 
   let limit = 25;
   let offset = 0;
-  let sortIndex = 5;
+  let sortIndex = sortingColumns.length - 1;
   let sortAsc = false;
 
   $: invalidLimit = !limit || (limit < 1);
   $: sortByProp = sortingColumns[sortIndex].prop || sortingColumns[sortIndex].name.toLowerCase();
+
+  // Cast to any to stop Svelte complaining about types in template
   $: sortedLogs = $filteredLogs
     .sort((a, b) => sortingColumns[sortIndex].compareFn(a[sortByProp], b[sortByProp], sortAsc))
-    .slice(offset, offset + limit);
+    .slice(offset, offset + limit) as any[];
   $: sortIcons = sortingColumns.map((_, index) => {
     let icon = faSort;
 
@@ -66,7 +98,7 @@
     return icon;
   }, {});
 
-  function group(log: Log) {
+  function group(log: LogCommon) {
     if (log.employee !== grouping.employee
         || Math.abs(log.fulldate.valueOf() - grouping.date.valueOf()) > 60000) {
       grouping.employee = log.employee;
@@ -149,16 +181,30 @@
       <tbody>
         {#each sortedLogs as log}
           <tr class={group(log)}>
-            <td title={log.rank}>{log.rank.match(/(\b\w)/g).join('')}</td>
+            {#if $logType !== LogType.Vehicle}
+              <td title={log.rank}>{log.rank.match(/(\b\w)/g).join('')}</td>
+            {/if}
             <td>{log.employee}</td>
-            <td class:has-background-success={log.quantity > 0 && log.value === 0}
-                class:has-background-danger={log.quantity < 0 && log.value === 0}>
+            {#if $logType !== LogType.Vehicle}
+              <td class:has-background-success={log.quantity > 0 && !log.value}
+                  class:has-background-danger={log.quantity < 0 && !log.value}>
               {(log.quantity > 0 ? '+' : '')}{log.quantity}
             </td>
-            <td class:has-background-success={log.value > 0}
-                class:has-background-danger={log.value < 0}
-                use:quid={log.value} />
-            <td>{log.item}</td>
+            {/if}
+            {#if $logType === LogType.Fund}
+              <td class:has-background-success={log.value > 0}
+                  class:has-background-danger={log.value < 0}
+                  use:quid={log.value} />
+            {/if}
+            {#if $logType === LogType.Vehicle}
+              <td class:has-background-success={log.quantity > 0}
+                  class:has-background-danger={log.quantity < 0}>
+                {(log.quantity === 1 ? 'Stored' : 'Retrieved')}
+              </td>
+              <td>{log.vehicle}</td>
+            {:else}
+              <td>{log.item}</td>
+            {/if}
             <td use:datetime={[log.fulldate, { dateStyle: 'medium', timeStyle: 'medium' }]} />
           </tr>
         {/each}

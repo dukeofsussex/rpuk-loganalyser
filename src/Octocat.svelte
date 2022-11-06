@@ -6,7 +6,8 @@
       aria-hidden="true">
     <a href="https://github.com/dukeofsussex/rpuk-loganalyser"
         style="pointer-events: auto"
-        target="_blank">
+        target="_blank"
+        rel="noopener noreferrer">
       <path d="M0,0 L250,250 L250,0 Z" />
     </a>
     <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" />

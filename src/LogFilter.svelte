@@ -7,6 +7,8 @@
     filters,
     changes,
     type Filter,
+    logType,
+    LogType,
   } from './storage';
   import { stringCompareFn } from './utils';
 
@@ -79,7 +81,7 @@
     {#each displayData as option}
       <!-- svelte-ignore a11y-missing-attribute -->
       <a class="panel-block is-justified-content-space-between is-unselectable"
-          class:is-active="{$filters[filter].get(option) && $balances[filter].has(option)}"
+          class:is-active="{$filters[filter].get(option) && ($logType === LogType.Vehicle || $balances[filter].has(option))}"
           on:click={() => toggle(option)}
           on:dblclick={() => select(option)}>
         <span class="panel-icon">
