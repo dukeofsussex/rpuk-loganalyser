@@ -59,8 +59,9 @@
       }
 
       const fulldate = new Date(parts[parts.length - 1].replace(/st|nd|rd|th/, ''));
+      const month = fulldate.getMonth() + 1;
       const dateData = {
-        date: fulldate.toLocaleDateString(),
+        date: `${fulldate.getFullYear()}-${month < 10 ? '0' : ''}${month}-${fulldate.getDate() < 10 ? '0' : ''}${fulldate.getDate()}`,
         fulldate,
       };
 
