@@ -102,7 +102,7 @@
     position: relative;
 
     .background {
-      background: url('/img/RPUK.png') center center no-repeat;
+      background: url('../img/RPUK.png') center center no-repeat;
       position: absolute;
       top: 50%;
       left: 50%;
