@@ -19,7 +19,7 @@
 <main>
   <Octocat />
   {#if !$logs.length}
-    <section class="hero is-fullheight is-hidden-touch m-1">
+    <section class="hero is-fullheight is-hidden-touch">
       <div class="hero-body is-flex-direction-column is-justify-content-center">
         <div class="box p-5"
             in:fly="{{ duration: 500, y: -500 }}"
@@ -51,7 +51,7 @@
       </div>
     </section>
   {:else}
-    <section class="columns is-hidden-touch m-1">
+    <section class="columns is-hidden-touch m-0">
       <div class="column">
         <LogFilter filter={'date'}
             showChanges={$logType === LogType.Vehicle}
