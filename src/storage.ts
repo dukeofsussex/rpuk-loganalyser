@@ -124,9 +124,7 @@ filteredLogs.subscribe((SubFilLogs) => {
           filteredLogSubscribe(b.date, log.date, (log as FundLog).value);
           filteredLogSubscribe(b.employee, log.employee, (log as FundLog).value);
           filteredLogSubscribe(b.item, (log as FundLog).item, (log as FundLog).value);
-        }
-
-        if (currentLogType === LogType.Vehicle) {
+        } else {
           changeSubscribe(c, log.date, log.quantity);
           changeSubscribe(c, log.employee, log.quantity);
         }

@@ -7,14 +7,12 @@
     filters,
     changes,
     type Filter,
-    logType,
-    LogType,
   } from './storage';
   import { stringCompareFn } from './utils';
 
   export let filter: Filter;
   export let icon: IconDefinition;
-  export let hasChanges = false;
+  export let showChanges = false;
   export let sortAsc = true;
   export let title = '';
 
@@ -81,7 +79,7 @@
     {#each displayData as option}
       <!-- svelte-ignore a11y-missing-attribute -->
       <a class="panel-block is-justified-content-space-between is-unselectable"
-          class:is-active="{$filters[filter].get(option) && ($logType === LogType.Vehicle || $balances[filter].has(option))}"
+          class:is-active="{$filters[filter].get(option) && ($changes.has(option) || $balances[filter].has(option))}"
           on:click={() => toggle(option)}
           on:dblclick={() => select(option)}
           role="presentation">
@@ -94,7 +92,7 @@
           </slot>
         </span>
         <div class="tags has-addons">
-          {#if hasChanges && $changes.has(option)}
+          {#if showChanges && $changes.has(option)}
             {#if $changes.get(option).positive && $changes.get(option).negative}
               <span class="tag has-text-success">
                 +{$changes.get(option).positive}

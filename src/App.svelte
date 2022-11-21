@@ -54,7 +54,7 @@
     <section class="columns is-hidden-touch m-1">
       <div class="column">
         <LogFilter filter={'date'}
-            hasChanges={true}
+            showChanges={$logType === LogType.Vehicle}
             icon={faCalendar}
             sortAsc={false}
             title="Dates">
@@ -69,13 +69,13 @@
       <div class="column is-flex is-flex-direction-column">
         <div class="half pb-1">
           <LogFilter filter={'employee'}
-              hasChanges={true}
+              showChanges={$logType === LogType.Vehicle}
               icon={faIdCard}
               title="Employees" />
         </div>
         <div class="half pt-1">
           <LogFilter filter={($logType === LogType.Vehicle ? 'vehicle' : 'item')}
-              hasChanges={true}
+              showChanges={true}
               icon={faBox}
               title={($logType === LogType.Vehicle ? 'Vehicles' : 'Items')} />
         </div>
