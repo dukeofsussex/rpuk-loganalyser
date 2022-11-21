@@ -83,7 +83,8 @@
       <a class="panel-block is-justified-content-space-between is-unselectable"
           class:is-active="{$filters[filter].get(option) && ($logType === LogType.Vehicle || $balances[filter].has(option))}"
           on:click={() => toggle(option)}
-          on:dblclick={() => select(option)}>
+          on:dblclick={() => select(option)}
+          role="presentation">
         <span class="panel-icon">
           <FaIcon {icon} />
         </span>

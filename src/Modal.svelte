@@ -39,7 +39,8 @@
 {#if visible}
   <div class="modal is-active">
     <div class="modal-background"
-        on:click="{() => toggle(false)}"></div>
+        on:click="{() => toggle(false)}"
+        role="presentation"/>
     <div class="modal-card"
         in:fly="{{ duration: 500, y: -500 }}"
         out:fly="{{ duration: 250, y: -500 }}">
