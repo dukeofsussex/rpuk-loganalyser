@@ -8,7 +8,7 @@ Import and analyse faction/group logs for [RPUK FiveM](https://roleplay.co.uk).
 
 ## Preview
 
-Try it out [here](https://dukeofsussex.dev/rpuk).
+Try it out [here](https://dukeofsussex.dev/projects/rpuk/).
 
 ### Prerequisites
 
