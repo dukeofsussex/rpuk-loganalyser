@@ -7,12 +7,15 @@
     filters,
     changes,
     type Filter,
+    logType,
+    LogType,
   } from './storage';
   import { stringCompareFn } from './utils';
 
   export let filter: Filter;
   export let icon: IconDefinition;
   export let showChanges = false;
+  export let showValueTotal = false;
   export let sortAsc = true;
   export let title = '';
 
@@ -23,6 +26,7 @@
     ? filterKeys.filter((x) => x.toLowerCase().indexOf(query.toLowerCase()) !== -1)
     : filterKeys)
     .sort((a: string, b: string) => stringCompareFn(a, b, sortAsc));
+  $: valueTotal = [...$balances[filter].values()].reduce((total, balance) => total + balance, 0);
 
   function toggle(option: string) {
     filters.update((f) => {
@@ -50,8 +54,15 @@
 </script>
 
 <nav class="panel is-flex is-flex-direction-column">
-  <p class="panel-heading">
-    {title}
+  <p class="panel-heading is-flex is-justify-content-space-between">
+    <span>{title}</span>
+    {#if $logType === LogType.Fund && showValueTotal}
+      <span class="tag"
+          class:is-danger={valueTotal < 0}
+          class:is-success={valueTotal > 0}
+          use:quid={valueTotal}>
+      </span>
+    {/if}
   </p>
   <div class="panel-block">
     <div class="field has-addons is-flex-grow-1">

@@ -55,6 +55,7 @@
       <div class="column">
         <LogFilter filter={'date'}
             showChanges={$logType === LogType.Vehicle}
+            showValueTotal={true}
             icon={faCalendar}
             sortAsc={false}
             title="Dates">
