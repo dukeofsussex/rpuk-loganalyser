@@ -1,38 +1,45 @@
 {
+  "root": true,
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "node": true
   },
   "extends": [
     "airbnb-base",
     "airbnb-typescript/base",
-    "plugin:import/typescript"
+    "plugin:import/typescript",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:svelte/recommended"
   ],
   "overrides": [
     {
-      "files": ["*.svelte"],
-      "processor": "svelte3/svelte3",
-      "rules": {
-        "a11y-missing-attribute": "off",
-        "import/first": "off",
-        "import/no-extraneous-dependencies": "off",
-        "import/no-mutable-exports": "off",
-        "no-multiple-empty-lines": ["error", { "max": 2 }]
+      "files": [
+        "*.svelte"
+      ],
+      "parser": "svelte-eslint-parser",
+      "parserOptions": {
+        "parser": "@typescript-eslint/parser"
       }
     }
   ],
   "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    "extraFileExtensions": [".svelte"],
-    "project": "tsconfig.json",
-    "sourceType": "module"
-  },
   "plugins": [
-    "svelte3",
     "@typescript-eslint"
   ],
-  "settings": {
-    "svelte3/typescript": true
+  "parserOptions": {
+    "project": "tsconfig.json",
+    "sourceType": "module",
+    "ecmaVersion": 2021,
+    "extraFileExtensions": [
+      ".svelte"
+    ]
+  },
+  // AirBnb rules are clashing with Svelte
+  "rules": {
+    "import/extensions": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/no-mutable-exports": "off",
+    "import/no-unresolved": "off"
   }
 }

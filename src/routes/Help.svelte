@@ -38,7 +38,10 @@
       </dt>
       <dd>
         <ul class="ml-0">
-          <li>Because the built-in filtering is insufficient (only able to filter by character or item, not both).</li>
+          <li>
+            Because the built-in filtering is insufficient
+            (only able to filter by character or item, not both).
+          </li>
           <li>Because I can.</li>
         </ul>
       </dd>
@@ -58,7 +61,10 @@
       </dt>
       <dd>
         <ol class="is-upper-roman">
-          <li>Highlight and copy all rows in the log you want to import (table headers can also be imported as they are ignored).</li>
+          <li>
+            Highlight and copy all rows in the log you want to import
+            (table headers can also be imported as they are ignored).
+          </li>
           <li>Click on "Import" at the top of this page.</li>
           <li>Paste the copied logs.</li>
           <li>Click on "Import".</li>

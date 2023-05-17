@@ -2,7 +2,7 @@
   import { onDestroy } from 'svelte';
   import { fly } from 'svelte/transition';
 
-  export let title = 'Title';
+  export let title: string;
 
   let visible = false;
 

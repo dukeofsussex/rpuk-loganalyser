@@ -1,7 +1,6 @@
 <script lang="ts">
   import { faUpload } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
-  import Modal from './Modal.svelte';
   import {
     logs,
     LogType,
@@ -9,12 +8,13 @@
     type FundLog,
     type Log,
     type VehicleLog,
-  } from './storage';
+  } from '$lib/storage';
+  import Modal from './Modal.svelte';
 
   const CombinedRegex = /(.*)\t(\+|-)\s*(\d+)(?:\s*\(£(\d+)\))?\t(.*)\t(.*)/;
   const VehicleRegex = /(.*)\t(.*)\t(Retrieved|Stored)\t(.*)/;
 
-  let error: string;
+  let error: string | null;
   let modal: Modal;
   let raw = '';
 
@@ -156,7 +156,7 @@
 </Modal>
 
 <style lang="scss">
-  @import './styles/_variables';
+  @import '../styles/_variables';
 
   textarea::placeholder {
     color: $text !important;

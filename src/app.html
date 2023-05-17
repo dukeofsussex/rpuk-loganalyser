@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
@@ -9,15 +10,14 @@
   <meta property="og:description" content="Import and analyse faction/group logs for RPUK FiveM.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://dukeofsussex.dev/projects/rpuk/img/avatar.png">
-  <title>RPUK Loganalyser</title>
-
-  <link rel='icon' type='image/png' href='./favicon.ico'>
-  <link rel='stylesheet' href='./build/bundle.css'>
-
-  <script defer src='./build/bundle.js'></script>
+  <link rel="icon" href="%sveltekit.assets%/favicon.ico" />
+  %sveltekit.head%
 </head>
 
-<body>
+<body data-sveltekit-preload-data="hover">
+  <main>
+    %sveltekit.body%
+  </main>
 </body>
 
 </html>

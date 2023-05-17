@@ -6,21 +6,26 @@
     faSortUp,
   } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
-  import Help from './Help.svelte';
-  import LogImporter from './LogImporter.svelte';
-  import Pagination from './Pagination.svelte';
-  import { datetime, quid } from './actions';
+  import { datetime, quid } from '$lib/actions';
   import {
     filteredLogs,
     LogType,
     logType,
     type LogCommon,
-  } from './storage';
-  import { numberCompareFn, stringCompareFn } from './utils';
+    type Log,
+    type VehicleLog,
+    type FundLog,
+  } from '$lib/storage';
+  import { numberCompareFn, stringCompareFn } from '$lib/utils';
+  import Help from './Help.svelte';
+  import LogImporter from './LogImporter.svelte';
+  import Pagination from './Pagination.svelte';
 
   interface SortingColumn {
     name: string;
     prop?: string;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     compareFn: (a: any, b: any, asc: boolean) => number;
   }
 
@@ -82,11 +87,15 @@
   let sortAsc = false;
 
   $: invalidLimit = !limit || (limit < 1);
-  $: sortByProp = sortingColumns[sortIndex].prop || sortingColumns[sortIndex].name.toLowerCase();
+  $: sortByProp = (sortingColumns[sortIndex].prop
+    || sortingColumns[sortIndex].name.toLowerCase()) as keyof (Log | VehicleLog | FundLog);
 
   // Cast to any to stop Svelte complaining about types in template
   $: sortedLogs = $filteredLogs
     .sort((a, b) => sortingColumns[sortIndex].compareFn(a[sortByProp], b[sortByProp], sortAsc))
+
+    // Typescript struggles with the different log types
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .slice(offset, offset + limit) as any[];
   $: sortIcons = sortingColumns.map((_, index) => {
     let icon = faSort;
@@ -225,7 +234,7 @@
     on:paginate={onPaginate} />
 
 <style lang="scss">
-  @import './styles/_variables.scss';
+  @import '../styles/_variables.scss';
 
   b {
     margin: 5px;

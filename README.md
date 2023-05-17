@@ -8,7 +8,7 @@ Import and analyse faction/group logs for [RPUK FiveM](https://roleplay.co.uk).
 
 ## Preview
 
-Try it out [here](https://dukeofsussex.dev/projects/rpuk/).
+Try it out [here](https://dukeofsussex.dev/projects/rpuk/loganalyser).
 
 ### Prerequisites
 
@@ -18,9 +18,9 @@ Try it out [here](https://dukeofsussex.dev/projects/rpuk/).
 
 1. Fork and clone this repository
 2. ```cd``` into the cloned repository's folder
-3. Run ```npm install``` to retrieve/install all dependencies.
-4. Run ```npm run dev``` to launch the development server.
-5. Navigate to ```http://localhost:8080``` in your preferred browser.
+3. Run ```npm install``` to retrieve/install all dependencies
+4. Run ```npm run dev``` to launch the development server
+5. Navigate to ```http://localhost:8080``` in your preferred browser
 
 ## Contributing
 

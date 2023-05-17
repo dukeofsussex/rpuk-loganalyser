@@ -8,7 +8,9 @@
   import { createEventDispatcher } from 'svelte';
   import FaIcon from 'svelte-fa';
 
+  // eslint-disable-next-line import/no-mutable-exports
   export let perPage = 1;
+  // eslint-disable-next-line import/no-mutable-exports
   export let total = 1;
 
   const dispatch = createEventDispatcher();

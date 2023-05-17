@@ -20,7 +20,7 @@
 @import "bulma/sass/layout/hero";
 @import "bulma/sass/helpers/_all";
 
-:global(body) {
+body {
     box-sizing: border-box;
     height: 100vh;
     max-height: 100vh;

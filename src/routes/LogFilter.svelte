@@ -1,16 +1,16 @@
 <script lang="ts">
   import { faCheckSquare, faSearch, type IconDefinition } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
-  import { quid } from './actions';
+  import { quid } from '$lib/actions';
   import {
     balances,
-    filters,
     changes,
     type Filter,
-    logType,
+    filters,
     LogType,
-  } from './storage';
-  import { stringCompareFn } from './utils';
+    logType,
+  } from '$lib/storage';
+  import { stringCompareFn } from '$lib/utils';
 
   export let filter: Filter;
   export let icon: IconDefinition;
@@ -90,7 +90,8 @@
     {#each displayData as option}
       <!-- svelte-ignore a11y-missing-attribute -->
       <a class="panel-block is-justified-content-space-between is-unselectable"
-          class:is-active="{$filters[filter].get(option) && ($changes.has(option) || $balances[filter].has(option))}"
+          class:is-active="{$filters[filter].get(option)
+              && ($changes.has(option) || $balances[filter].has(option))}"
           on:click={() => toggle(option)}
           on:dblclick={() => select(option)}
           role="presentation">
@@ -104,40 +105,38 @@
         </span>
         <div class="tags has-addons">
           {#if showChanges && $changes.has(option)}
-            {#if $changes.get(option).positive && $changes.get(option).negative}
+            {#if $changes.get(option)?.positive
+                && $changes.get(option)?.negative}
               <span class="tag has-text-success">
-                +{$changes.get(option).positive}
+                +{$changes.get(option)?.positive}
               </span>
               <span class="tag has-text-danger">
-                {$changes.get(option).negative}
+                {$changes.get(option)?.negative}
               </span>
             {/if}
-            {#if $changes.get(option).diff}
+            {#if $changes.get(option)?.diff}
               <span class="tag is-dark"
-                class:is-danger={$changes.get(option).diff < 0 && $balances[filter].get(option) === 0}
-                class:is-success={$changes.get(option).diff > 0 && $balances[filter].get(option) === 0}>
-                {($changes.get(option).diff > 0 ? '+' : '')}{$changes.get(option).diff}
+                class:is-danger={($changes.get(option)?.diff ?? 0) < 0
+                  && $balances[filter].get(option) === 0}
+                class:is-success={($changes.get(option)?.diff ?? 0) > 0
+                  && $balances[filter].get(option) === 0}>
+                {(($changes.get(option)?.diff ?? 0) > 0 ? '+' : '')}{$changes.get(option)?.diff}
               </span>
             {/if}
           {/if}
           {#if $balances[filter].has(option)}
             <span class="tag"
-                class:is-danger={$balances[filter].get(option) < 0}
-                class:is-success={$balances[filter].get(option) > 0}
-                use:quid={$balances[filter].get(option)}/>
+                class:is-danger={($balances[filter].get(option) || 0) < 0}
+                class:is-success={($balances[filter].get(option) || 0) > 0}
+                use:quid={$balances[filter].get(option) || 0}/>
           {/if}
         </div>
       </a>
     {/each}
-    {#if !displayData.length && query}
-      <!-- svelte-ignore a11y-missing-attribute -->
-      <a class="panel-block is-unselectable">
-        Nothing found for "{query}"
-      </a>
-    {:else if !displayData.length}
+    {#if !displayData.length}
       <!-- svelte-ignore a11y-missing-attribute -->
       <a class="panel-block is-unselectable is-text-centered">
-        Nothing to display
+        {(query ? `Nothing found for "${query}"` : 'Nothing to display')}
       </a>
     {/if}
   </div>
