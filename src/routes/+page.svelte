@@ -16,10 +16,6 @@
   import Octocat from './Octocat.svelte';
 </script>
 
-<svelte:head>
-  <title>RPUK Loganalyser</title>
-</svelte:head>
-
 <Octocat />
 {#if !$logs.length}
   <section class="hero is-fullheight is-hidden-touch">
