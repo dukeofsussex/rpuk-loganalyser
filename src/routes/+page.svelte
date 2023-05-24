@@ -6,7 +6,6 @@
     faExclamationTriangle,
     faIdCard,
   } from '@fortawesome/free-solid-svg-icons';
-  import { fly } from 'svelte/transition';
   import FaIcon from 'svelte-fa';
   import { datetime } from '$lib/actions';
   import { logs, LogType, logType } from '$lib/storage';
@@ -25,9 +24,7 @@
 {#if !$logs.length}
   <section class="hero is-fullheight is-hidden-touch">
     <div class="hero-body is-flex-direction-column is-justify-content-center">
-      <div class="box p-5"
-          in:fly="{{ duration: 500, y: -500 }}"
-          out:fly="{{ duration: 250, y: -500 }}">
+      <div class="box p-5">
         <div class="background" />
         <div class="body">
           <p class="title">
@@ -102,6 +99,7 @@
 <style lang="scss">
   .box {
     position: relative;
+    animation: .5s ease-out 0s 1 slideInFromTop;
 
     .background {
       background: url('$lib/assets/RPUK.png') center center no-repeat;
@@ -129,5 +127,14 @@
 
   .half {
     height: 50% !important;
+  }
+
+  @keyframes slideInFromTop {
+    0% {
+      transform: translateY(-200%);
+    }
+    100% {
+      transform: translateY(0);
+    }
   }
 </style>
