@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 export function datetime(
   node: HTMLElement,
-  [value, opts]: [ value: Date, opts: Intl.DateTimeFormatOptions ],
+  [value, opts]: [value: Date, opts: Intl.DateTimeFormatOptions],
 ) {
   const dtFormatter = new Intl.DateTimeFormat([], opts);
   const format = (val: Date) => dtFormatter.format(val);
@@ -9,7 +9,7 @@ export function datetime(
   node.innerText = format(value);
 
   return {
-    update([updatedValue]: [ updatedValue: Date ]) {
+    update([updatedValue]: [updatedValue: Date]) {
       node.innerText = format(updatedValue);
     },
   };
