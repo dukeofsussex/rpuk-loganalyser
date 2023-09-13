@@ -3,21 +3,50 @@
   import {
     faBox,
     faCalendar,
+    faCar,
     faExclamationTriangle,
     faIdCard,
+    faUserMd,
+    type IconDefinition,
   } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
   import { datetime } from '$lib/actions';
-  import { logs, LogType, logType } from '$lib/storage';
+  import { logManager } from '$lib/storage';
   import Help from './Help.svelte';
   import LogFilter from './LogFilter.svelte';
   import LogImporter from './LogImporter.svelte';
   import LogViewer from './LogViewer.svelte';
   import Octocat from './Octocat.svelte';
+  import { LogType, type Filter } from '$lib/logs';
+
+  let dynamicFilter: {
+    filter: Filter;
+    icon: IconDefinition;
+    title: string;
+  } = {
+    filter: 'item',
+    icon: faBox,
+    title: 'Item',
+  };
+
+  $: showChanges = $logManager?.type === LogType.Prison || $logManager?.type === LogType.Vehicle;
+  $: if ($logManager?.type === LogType.Prison) {
+    dynamicFilter = {
+      filter: 'jobAction',
+      icon: faUserMd,
+      title: 'Job Action',
+    };
+  } else if ($logManager?.type === LogType.Vehicle) {
+    dynamicFilter = {
+      filter: 'vehicle',
+      icon: faCar,
+      title: 'Vehicle',
+    };
+  }
 </script>
 
 <Octocat />
-{#if !$logs.length}
+{#if !$logManager}
   <section class="hero is-fullheight is-hidden-touch">
     <div class="hero-body is-flex-direction-column is-justify-content-center">
       <div class="box p-5">
@@ -39,6 +68,7 @@
                 <li>Armoury</li>
                 <li>Evidence</li>
                 <li>Fund</li>
+                <li>Prison</li>
                 <li>Vehicle</li>
               </ul>
             </li>
@@ -51,7 +81,7 @@
   <section class="columns is-hidden-touch m-0">
     <div class="column">
       <LogFilter filter={'date'}
-          showChanges={$logType === LogType.Vehicle}
+          showChanges={showChanges}
           showValueTotal={true}
           icon={faCalendar}
           sortAsc={false}
@@ -67,15 +97,15 @@
     <div class="column is-flex is-flex-direction-column">
       <div class="half pb-1">
         <LogFilter filter={'employee'}
-            showChanges={$logType === LogType.Vehicle}
+            showChanges={showChanges}
             icon={faIdCard}
             title="Employees" />
       </div>
       <div class="half pt-1">
-        <LogFilter filter={($logType === LogType.Vehicle ? 'vehicle' : 'item')}
+        <LogFilter filter={dynamicFilter.filter}
             showChanges={true}
-            icon={faBox}
-            title={($logType === LogType.Vehicle ? 'Vehicles' : 'Items')} />
+            icon={dynamicFilter.icon}
+            title={dynamicFilter.title} />
       </div>
     </div>
   </section>

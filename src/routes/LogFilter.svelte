@@ -2,15 +2,13 @@
   import { faCheckSquare, faSearch, type IconDefinition } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
   import { quid } from '$lib/actions';
+  import { stringCompareFn, LogType, type Filter } from '$lib/logs';
   import {
     balances,
     changes,
-    type Filter,
     filters,
-    LogType,
-    logType,
+    logManager,
   } from '$lib/storage';
-  import { stringCompareFn } from '$lib/utils';
 
   export let filter: Filter;
   export let icon: IconDefinition;
@@ -27,6 +25,11 @@
     : filterKeys)
     .sort((a: string, b: string) => stringCompareFn(a, b, sortAsc));
   $: valueTotal = [...$balances[filter].values()].reduce((total, balance) => total + balance, 0);
+
+  // Required to satisfy a typescript-eslint type error...
+  function getQuid(option: string) {
+    return $balances[filter].get(option) || 0;
+  }
 
   function toggle(option: string) {
     filters.update((f) => {
@@ -56,7 +59,7 @@
 <nav class="panel is-flex is-flex-direction-column">
   <p class="panel-heading is-flex is-justify-content-space-between">
     <span>{title}</span>
-    {#if $logType === LogType.Fund && showValueTotal}
+    {#if $logManager.type === LogType.Fund && showValueTotal}
       <span class="tag"
           class:is-danger={valueTotal < 0}
           class:is-success={valueTotal > 0}
@@ -128,7 +131,7 @@
             <span class="tag"
                 class:is-danger={($balances[filter].get(option) || 0) < 0}
                 class:is-success={($balances[filter].get(option) || 0) > 0}
-                use:quid={$balances[filter].get(option) || 0}/>
+                use:quid={getQuid(option)}/>
           {/if}
         </div>
       </a>

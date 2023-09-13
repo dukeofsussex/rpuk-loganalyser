@@ -7,97 +7,36 @@
   } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
   import { datetime, quid } from '$lib/actions';
-  import {
-    filteredLogs,
-    LogType,
-    logType,
-    type LogCommon,
-    type Log,
-    type VehicleLog,
-    type FundLog,
-  } from '$lib/storage';
-  import { numberCompareFn, stringCompareFn } from '$lib/utils';
+  import { LogType, type Log, type LogCommon } from '$lib/logs';
+  import { filteredLogs, logManager } from '$lib/storage';
   import Help from './Help.svelte';
   import LogImporter from './LogImporter.svelte';
   import Pagination from './Pagination.svelte';
 
-  interface SortingColumn {
-    name: string;
-    prop?: string;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    compareFn: (a: any, b: any, asc: boolean) => number;
-  }
-
-  const GROUPING_COLOURS = 2;
   const grouping = {
     date: new Date(),
     employee: '',
     colourIndex: 0,
   };
-  const sortingColumns: SortingColumn[] = [
-    ...($logType !== LogType.Vehicle
-      ? [{
-        name: 'Rank',
-        compareFn: stringCompareFn,
-      }]
-      : []),
-    {
-      name: 'Employee',
-      compareFn: stringCompareFn,
-    },
-    ...($logType !== LogType.Vehicle
-      ? [{
-        name: 'Quantity',
-        compareFn: numberCompareFn,
-      }]
-      : []),
-    ...($logType === LogType.Fund
-      ? [{
-        name: 'Value',
-        compareFn: numberCompareFn,
-      }]
-      : []),
-    ...($logType !== LogType.Vehicle
-      ? [{
-        name: 'Item',
-        compareFn: stringCompareFn,
-      }]
-      : []),
-    ...($logType === LogType.Vehicle
-      ? [{
-        name: 'Action',
-        prop: 'quantity',
-        compareFn: numberCompareFn,
-      }, {
-        name: 'Vehicle',
-        compareFn: stringCompareFn,
-      }]
-      : []),
-    {
-      name: 'Date',
-      prop: 'fulldate',
-      compareFn: numberCompareFn,
-    },
-  ];
 
   let limit = 25;
   let offset = 0;
-  let sortIndex = sortingColumns.length - 1;
+  let sortIndex = $logManager.viewerColumns.length - 1;
   let sortAsc = false;
 
   $: invalidLimit = !limit || (limit < 1);
-  $: sortByProp = (sortingColumns[sortIndex].prop
-    || sortingColumns[sortIndex].name.toLowerCase()) as keyof (Log | VehicleLog | FundLog);
+  $: sortByProp = ($logManager.viewerColumns[sortIndex].prop
+    || $logManager.viewerColumns[sortIndex].name.toLowerCase()) as keyof Log;
 
   // Cast to any to stop Svelte complaining about types in template
   $: sortedLogs = $filteredLogs
-    .sort((a, b) => sortingColumns[sortIndex].compareFn(a[sortByProp], b[sortByProp], sortAsc))
+    .sort((a, b) => $logManager.viewerColumns[sortIndex]
+      .compareFn(a[sortByProp], b[sortByProp], sortAsc))
 
     // Typescript struggles with the different log types
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .slice(offset, offset + limit) as any[];
-  $: sortIcons = sortingColumns.map((_, index) => {
+  $: sortIcons = $logManager.viewerColumns.map((_, index) => {
     let icon = faSort;
 
     if (index === sortIndex) {
@@ -111,7 +50,7 @@
     if (log.employee !== grouping.employee
         || Math.abs(log.fulldate.valueOf() - grouping.date.valueOf()) > 60000) {
       grouping.employee = log.employee;
-      grouping.colourIndex = (grouping.colourIndex + 1) % GROUPING_COLOURS;
+      grouping.colourIndex = grouping.colourIndex === 0 ? 1 : 0;
     }
 
     grouping.date = log.fulldate;
@@ -174,7 +113,7 @@
     <table class="table is-fullwidth is-hoverable">
       <thead>
         <tr>
-          {#each sortingColumns as column, index}
+          {#each $logManager.viewerColumns as column, index}
             <th class="is-clickable is-unselectable"
                 on:click={() => sort(index)}>
               <span class="is-flex is-align-items-center">
@@ -190,36 +129,33 @@
       <tbody>
         {#each sortedLogs as log}
           <tr class={group(log)}>
-            {#if $logType !== LogType.Vehicle}
-              <td title={log.rank}>{log.rank.match(/(\b\w)/g).join('')}</td>
-            {/if}
-            <td>{log.employee}</td>
-            {#if $logType !== LogType.Vehicle}
-              <td class:has-background-success={log.quantity > 0 && !log.value}
-                  class:has-background-danger={log.quantity < 0 && !log.value}>
-              {(log.quantity > 0 ? '+' : '')}{log.quantity}
-            </td>
-            {/if}
-            {#if $logType === LogType.Fund}
-              <td class:has-background-success={log.value > 0}
-                  class:has-background-danger={log.value < 0}
-                  use:quid={log.value} />
-            {/if}
-            {#if $logType === LogType.Vehicle}
-              <td class:has-background-success={log.quantity > 0}
-                  class:has-background-danger={log.quantity < 0}>
-                {(log.quantity === 1 ? 'Stored' : 'Retrieved')}
-              </td>
-              <td>{log.vehicle}</td>
-            {:else}
-              <td>{log.item}</td>
-            {/if}
-            <td use:datetime={[log.fulldate, { dateStyle: 'medium', timeStyle: 'medium' }]} />
+            {#each $logManager.viewerColumns as col}
+              {#if col.prop === 'rank'}
+                <td title={log.rank}>{log.rank.match(/(\b\w)/g).join('')}</td>
+              {:else if col.prop === 'quantity'}
+                <td class:has-background-success={log.quantity > 0 && !log.value}
+                    class:has-background-danger={log.quantity < 0 && !log.value}>
+                    {#if $logManager.type === LogType.Vehicle}
+                      {(log.quantity === 1 ? 'Stored' : 'Retrieved')}
+                    {:else}
+                      {(log.quantity > 0 ? '+' : '')}{log.quantity}
+                    {/if}
+                </td>
+              {:else if col.prop === 'value'}
+                <td class:has-background-success={log.value > 0}
+                    class:has-background-danger={log.value < 0}
+                    use:quid={log.value} />
+              {:else if col.prop === 'fulldate'}
+                <td use:datetime={[log.fulldate, { dateStyle: 'medium', timeStyle: 'medium' }]} />
+              {:else}
+                <td>{log[col.prop]}</td>
+              {/if}
+            {/each}
           </tr>
         {/each}
         {#if !sortedLogs.length}
           <tr>
-            <td colspan="6"
+            <td colspan={$logManager.viewerColumns.length}
                 class="has-text-centered">
               Nothing to display
             </td>

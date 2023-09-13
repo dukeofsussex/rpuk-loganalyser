@@ -2,17 +2,27 @@
   import { faUpload } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
   import {
-    logs,
-    LogType,
-    logType,
-    type FundLog,
+    ArmouryLogManager,
+    EvidenceLogManager,
+    FundLogManager,
+    PrisonLogManager,
+    VehicleLogManager,
     type Log,
-    type VehicleLog,
+    type LogManager,
+  } from '$lib/logs';
+  import {
+    logManager,
+    logs,
   } from '$lib/storage';
   import Modal from './Modal.svelte';
 
-  const CombinedRegex = /(.*)\t(\+|-)\s*(\d+)(?:\s*\(£(\d+)\))?\t(.*)\t(.*)/;
-  const VehicleRegex = /(.*)\t(.*)\t(Retrieved|Stored)\t(.*)/;
+  const logManagers = [
+    new ArmouryLogManager(),
+    new EvidenceLogManager(),
+    new FundLogManager(),
+    new PrisonLogManager(),
+    new VehicleLogManager(),
+  ];
 
   let error: string | null;
   let modal: Modal;
@@ -25,82 +35,42 @@
 
   function importLogs() {
     const lines = raw.split('\n');
-    const rows: (Log | FundLog | VehicleLog)[] = [];
+    const rows: Log[] = [];
     error = null;
 
     for (let i = 0; i < lines.length; i += 1) {
-      const line = lines[i];
+      const line = lines[i].trim();
 
       // Skip blank lines and table headers
-      if (line.trim().length === 0 || line.trim().startsWith('Name')) {
+      if (line.length === 0 || line.startsWith('Name') || line.startsWith('Citizen')) {
         // eslint-disable-next-line no-continue
         continue;
       }
 
-      if (!$logType) {
-        if (line.includes('£')) {
-          $logType = LogType.Fund;
-        } else if (VehicleRegex.test(line)) {
-          $logType = LogType.Vehicle;
-        } else if (CombinedRegex.test(line)) {
-          $logType = LogType.Default;
-        } else {
+      if (!$logManager) {
+        for (let j = 0; j < logManagers.length; j += 1) {
+          const manager = logManagers[j];
+
+          if (manager.isType(line)) {
+            $logManager = manager as LogManager<Log>;
+            break;
+          }
+        }
+
+        if (!$logManager) {
           error = 'Unable to determine log type!';
           break;
         }
       }
 
-      const parts = line.match($logType === LogType.Vehicle ? VehicleRegex : CombinedRegex);
+      const log = $logManager.import(line);
 
-      // Different log type
-      if (!parts) {
+      if (!log) {
         error = 'You cannot combine different types of logs!';
         break;
       }
 
-      const fulldate = new Date(parts[parts.length - 1].replace(/st|nd|rd|th/, ''));
-      const month = fulldate.getMonth() + 1;
-      const dateData = {
-        date: `${fulldate.getFullYear()}-${month < 10 ? '0' : ''}${month}-${fulldate.getDate() < 10 ? '0' : ''}${fulldate.getDate()}`,
-        fulldate,
-      };
-
-      if ($logType === LogType.Vehicle) {
-        (rows as VehicleLog[]).push({
-          ...dateData,
-          employee: parts[1],
-          quantity: parts[3] === 'Retrieved' ? -1 : 1,
-          vehicle: parts[2],
-        });
-
-        // eslint-disable-next-line no-continue
-        continue;
-      }
-
-      const nameParts = parts[1].split(' ');
-      const negative = parts[2] === '-';
-      const quantity = line.includes('Insurance') || line.includes('Purchase')
-        ? -1
-        : parseInt(`${(negative ? '-' : '')}${parts[3]}`, 10);
-
-      const row: Log = {
-        ...dateData,
-        employee: nameParts.slice(-2).join(' '),
-        item: parts[parts.length - 2],
-        quantity,
-        rank: nameParts.slice(0, -2).join(' '),
-      };
-
-      if ($logType === LogType.Fund) {
-        (rows as FundLog[]).push({
-          ...row,
-          value: line.includes('Insurance') || line.includes('Purchase')
-            ? -parts[3]
-            : parseInt(`${(negative ? '-' : '')}${parts[4]}`, 10),
-        });
-      } else {
-        (rows as Log[]).push(row);
-      }
+      rows.push(log);
     }
 
     if (error) {
