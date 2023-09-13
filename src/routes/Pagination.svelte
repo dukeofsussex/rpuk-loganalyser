@@ -16,7 +16,7 @@
   const dispatch = createEventDispatcher();
   let currentPage = 1;
 
-  $: pages = Math.ceil(total / perPage);
+  $: pages = perPage ? Math.ceil(total / perPage) : 1;
 
   function goToPage(page: number) {
     if (currentPage === page) {
