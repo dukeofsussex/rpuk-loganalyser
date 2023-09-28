@@ -10,7 +10,7 @@ import {
   type Changes,
   type LogCommon,
   type Filters,
-} from './common';
+} from './Common';
 
 export interface PrisonLog extends LogCommon {
   citizenId: number;

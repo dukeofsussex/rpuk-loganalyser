@@ -8,7 +8,7 @@ export type Log = ArmouryLog | EvidenceLog | FundLog | PrisonLog | VehicleLog;
 
 export * from './Armoury';
 export { default as ArmouryLogManager } from './Armoury';
-export * from './common';
+export * from './Common';
 export * from './Evidence';
 export { default as EvidenceLogManager } from './Evidence';
 export * from './Fund';

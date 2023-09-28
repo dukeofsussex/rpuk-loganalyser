@@ -1,4 +1,4 @@
-import { commonViewerColumns, LogType } from './common';
+import { commonViewerColumns, LogType } from './Common';
 import EvidenceLogManager from './Evidence';
 import type { EvidenceLog } from './Evidence';
 

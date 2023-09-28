@@ -8,7 +8,7 @@ import {
   type Changes,
   type Filters,
   type LogCommon,
-} from './common';
+} from './Common';
 
 export interface EvidenceLog extends LogCommon {
   item: string;

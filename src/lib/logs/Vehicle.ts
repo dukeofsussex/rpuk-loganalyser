@@ -10,7 +10,7 @@ import {
   type Changes,
   type LogCommon,
   type Filters,
-} from './common';
+} from './Common';
 
 export interface VehicleLog extends LogCommon {
   quantity: -1 | 1;

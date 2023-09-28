@@ -8,7 +8,7 @@ import {
   type Balances,
   type Changes,
   type Filter,
-} from './common';
+} from './Common';
 
 export interface FundLog extends ArmouryLog {
   value: number;
