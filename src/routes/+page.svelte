@@ -29,7 +29,9 @@
     title: 'Item',
   };
 
-  $: showChanges = $logManager?.type === LogType.Prison || $logManager?.type === LogType.Vehicle;
+  $: showChanges = $logManager?.type === LogType.Evidence
+    || $logManager?.type === LogType.Prison
+    || $logManager?.type === LogType.Vehicle;
   $: if ($logManager?.type === LogType.Prison) {
     dynamicFilter = {
       filter: 'jobAction',
