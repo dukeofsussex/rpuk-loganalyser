@@ -139,8 +139,8 @@ export const commonViewerColumns = {
     compareFn: numberCompareFn,
   },
   rank: {
-    name: 'Date',
-    prop: 'fulldate',
-    compareFn: numberCompareFn,
+    name: 'Rank',
+    prop: 'rank',
+    compareFn: stringCompareFn,
   },
 };
