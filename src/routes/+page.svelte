@@ -34,7 +34,7 @@
     dynamicFilter = {
       filter: 'jobAction',
       icon: faUserMd,
-      title: 'Job Action',
+      title: '[Job] Action',
     };
   } else if ($logManager?.type === LogType.Vehicle) {
     dynamicFilter = {
