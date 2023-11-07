@@ -25,7 +25,7 @@ export default class PrisonLogManager extends LogManager<PrisonLog> {
   /* eslint-disable-next-line class-methods-use-this */
   convert([, citizenId, name, imprisonmentId, date, action, job, details]: string[]): PrisonLog {
     let quantity = action === 'PRISON_ADMISSION' ? 1 : 0;
-    quantity = (action === 'PRISON_RELEASED' || action === 'PRISON_ESCAPE') ? -1 : quantity;
+    quantity = ['PRISON_RELEASED', 'PRISON_RELEASED_EARLY', 'PRISON_ESCAPE'].includes(action) ? -1 : quantity;
     const jobPrefix = name ? job.match(/(\b\w)/g)?.join('') : 'SYS';
 
     return {
