@@ -19,7 +19,7 @@ function valueSubscribe(data: Balances[Filter], key: string, value: number) {
 }
 
 export default class FundLogManager extends ArmouryLogManager {
-  protected regex = /(.*)\t(\+|-)\s*(\d+)(?:\s*\(£(\d+)\))?\t(.*?)(?:\t(.*))\t(.*)/;
+  protected regex = /(.*)\t(\+|-)\s*([\d.]+)(?:\s*\(£([\d.]+)\))?\t(.*?)(?:\t(.*))\t(.*)/;
 
   /* eslint-disable-next-line class-methods-use-this */
   convert([line, name, sign, amount, value, item, identifier, date]: string[]): FundLog {
