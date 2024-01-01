@@ -13,30 +13,31 @@ import {
 } from './Common';
 
 export interface PrisonLog extends LogCommon {
-  citizenId: number;
-  imprisonmentId: number;
+  inmate: string;
+  sentenceId: number;
   jobAction: string;
   details: string;
 }
 
 export default class PrisonLogManager extends LogManager<PrisonLog> {
-  protected regex = /(?:\[(\d+)\]\s(.*)|0)\t(\d+)\t(.*)\t(.*)\t(.*)\t(.*)/;
+  protected regex = /(.*)\t(\d+)\t(.*)\t(.*)\t(.*)\t(.*)/;
 
   /* eslint-disable-next-line class-methods-use-this */
-  convert([, citizenId, name, imprisonmentId, date, action, job, details]: string[]): PrisonLog {
+  convert([, inmate, sentenceId, date, action, job, details]: string[]): PrisonLog {
     let quantity = action === 'PRISON_ADMISSION' ? 1 : 0;
     quantity = ['PRISON_RELEASED', 'PRISON_RELEASED_EARLY', 'PRISON_ESCAPE'].includes(action) ? -1 : quantity;
-    const jobPrefix = name ? job.match(/(\b\w)/g)?.join('') : 'SYS';
+    const jobPrefix = `[${(job !== 'GOV' ? job.match(/(\b\w)/g)?.join('') : 'SYS')}]`;
+    const employee = details.includes('Officer') ? `${jobPrefix} ${details.split(': ')[1]}` : 'SYSTEM';
 
     return {
       ...PrisonLogManager.extractDate(date),
       action,
-      citizenId: parseInt(citizenId, 10) || 0,
-      employee: `[${jobPrefix}] ${name || 'SYSTEM'}`,
-      details,
-      imprisonmentId: parseInt(imprisonmentId, 10),
-      jobAction: `[${jobPrefix}] ${action}`,
+      employee,
+      details: details.includes('Officer') ? 'N/A' : details,
+      inmate: inmate.replace(/(\w)(\w*)/g, (_, w1, w2) => w1.toUpperCase() + w2.toLowerCase()),
+      jobAction: `${jobPrefix} ${action}`,
       quantity,
+      sentenceId: parseInt(sentenceId, 10),
     };
   }
 
@@ -62,14 +63,14 @@ export default class PrisonLogManager extends LogManager<PrisonLog> {
 
   viewerColumns = [
     {
-      name: 'Citizen Id',
-      prop: 'citizenId',
-      compareFn: numberCompareFn,
+      name: 'Inmate',
+      prop: 'inmate',
+      compareFn: stringCompareFn,
     },
     commonViewerColumns.employee,
     {
-      name: 'Imprisonment Id',
-      prop: 'imprisonmentId',
+      name: '#Sentence',
+      prop: 'sentenceId',
       compareFn: numberCompareFn,
     },
     {
