@@ -20,14 +20,14 @@ export interface PrisonLog extends LogCommon {
 }
 
 export default class PrisonLogManager extends LogManager<PrisonLog> {
-  protected regex = /(.*)\t(\d+)\t(.*)\t(.*)\t(.*)\t(.*)/;
+  protected regex = /(.*)\t(\d+)\t(\d+)\t(.*)\t(.*)\t(.*)\t(.*)/;
 
   /* eslint-disable-next-line class-methods-use-this */
-  convert([, inmate, sentenceId, date, action, job, details]: string[]): PrisonLog {
+  convert([, inmate, reportId, sentenceId, date, action, job, details]: string[]): PrisonLog {
     let quantity = action === 'PRISON_ADMISSION' ? 1 : 0;
-    quantity = ['PRISON_RELEASED', 'PRISON_RELEASED_EARLY', 'PRISON_ESCAPE'].includes(action) ? -1 : quantity;
+    quantity = ['PRISON_RELEASED', 'PRISON_RELEASED_EARLY', 'PRISON_ADJUSTED_SENTENCE_TIME', 'PRISON_ESCAPE'].includes(action) ? -1 : quantity;
     const jobPrefix = `[${(job !== 'GOV' ? job.match(/(\b\w)/g)?.join('') : 'SYS')}]`;
-    const employee = details.includes('Officer') ? `${jobPrefix} ${details.split(': ')[1]}` : 'SYSTEM';
+    const employee = details.includes('Officer') ? `${jobPrefix} ${details.substring(details.lastIndexOf(':') + 1).trim()}` : 'SYSTEM';
 
     return {
       ...PrisonLogManager.extractDate(date),
@@ -37,6 +37,7 @@ export default class PrisonLogManager extends LogManager<PrisonLog> {
       inmate: inmate.replace(/(\w)(\w*)/g, (_, w1, w2) => w1.toUpperCase() + w2.toLowerCase()),
       jobAction: `${jobPrefix} ${action}`,
       quantity,
+      report: parseInt(reportId, 10),
       sentenceId: parseInt(sentenceId, 10),
     };
   }
@@ -68,6 +69,11 @@ export default class PrisonLogManager extends LogManager<PrisonLog> {
       compareFn: stringCompareFn,
     },
     commonViewerColumns.employee,
+    {
+      name: '#Report',
+      prop: 'report',
+      compareFn: numberCompareFn,
+    },
     {
       name: '#Sentence',
       prop: 'sentenceId',
