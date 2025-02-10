@@ -14,17 +14,19 @@ import {
 
 export interface VehicleLog extends LogCommon {
   quantity: -1 | 1;
+  location: string;
   vehicle: string;
 }
 
 export default class VehicleLogManager extends LogManager<VehicleLog> {
-  protected regex = /(.*)\t(.*)\t(Retrieved|Stored)\t(.*)/;
+  protected regex = /(.*)\t(.*)\t(Retrieved|Stored)\t(.*)\t(.*)/;
 
   /* eslint-disable-next-line class-methods-use-this */
-  convert([, name, vehicle, type, date]: string[]): VehicleLog {
+  convert([, name, vehicle, type, location, date]: string[]): VehicleLog {
     return {
       ...VehicleLogManager.extractDate(date),
       employee: name,
+      location,
       quantity: type === 'Retrieved' ? -1 : 1,
       vehicle,
     };
@@ -60,6 +62,11 @@ export default class VehicleLogManager extends LogManager<VehicleLog> {
     {
       name: 'Vehicle',
       prop: 'vehicle',
+      compareFn: stringCompareFn,
+    },
+    {
+      name: 'Location',
+      prop: 'location',
       compareFn: stringCompareFn,
     },
     commonViewerColumns.date,
