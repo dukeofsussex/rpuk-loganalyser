@@ -131,7 +131,7 @@
           <tr class={group(log)}>
             {#each $logManager.viewerColumns as col}
               {#if col.prop === 'rank'}
-                <td title={log.rank}>{log.rank.match(/(\b\w)/g).join('')}</td>
+                <td title={log.rank}>{log.rank.match(/(\b\w)/g)?.join('') ?? '-'}</td>
               {:else if col.prop === 'quantity'}
                 <td class:has-background-success={log.quantity > 0 && !log.value}
                     class:has-background-danger={log.quantity < 0 && !log.value}>
