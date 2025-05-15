@@ -58,7 +58,7 @@
 
 <nav class="panel is-flex is-flex-direction-column">
   <p class="panel-heading is-flex is-justify-content-space-between">
-    <span>{title}</span>
+    <span class="is-uppercase">{title}</span>
     {#if $logManager.type === LogType.Fund && showValueTotal}
       <span class="tag"
           class:is-danger={valueTotal < 0}
@@ -106,7 +106,7 @@
             {option}
           </slot>
         </span>
-        <div class="tags has-addons">
+        <div class="tags is-justify-content-end has-addons">
           {#if showChanges && $changes.has(option)}
             {#if $changes.get(option)?.positive
                 && $changes.get(option)?.negative}
@@ -160,5 +160,9 @@
 
   .panel-group {
     overflow-y: auto;
+  }
+
+  .tags {
+    min-width: fit-content;
   }
 </style>
