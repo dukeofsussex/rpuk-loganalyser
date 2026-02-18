@@ -36,6 +36,7 @@
   function importLogs() {
     const lines = raw.split('\n');
     const rows: Log[] = [];
+    let currentLogManager = $logManager;
     error = null;
 
     for (let i = 0; i < lines.length; i += 1) {
@@ -47,23 +48,29 @@
         continue;
       }
 
-      if (!$logManager) {
+      if (!currentLogManager) {
         for (let j = 0; j < logManagers.length; j += 1) {
           const manager = logManagers[j];
 
           if (manager.isType(line)) {
-            $logManager = manager as LogManager<Log>;
+            currentLogManager = manager as LogManager<Log>;
             break;
           }
         }
 
-        if (!$logManager) {
+        if (!currentLogManager) {
           error = 'Unable to determine log type!';
           break;
         }
       }
 
-      const log = $logManager.import(line);
+      let log = null;
+      try {
+        log = currentLogManager.import(line);
+      } catch {
+        error = 'Unable to parse malformed lines';
+        break;
+      }
 
       if (!log) {
         error = 'You cannot combine different types of logs!';
@@ -79,6 +86,7 @@
       return;
     }
 
+    $logManager = currentLogManager;
     logs.update(($logs) => $logs.concat(rows));
     clear();
     modal.close();

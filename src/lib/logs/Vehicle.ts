@@ -19,7 +19,7 @@ export interface VehicleLog extends LogCommon {
 }
 
 export default class VehicleLogManager extends LogManager<VehicleLog> {
-  protected regex = /(.*)\t(.*)\t(Retrieved|Stored)\t(.*)\t(.*)/;
+  protected regex = /(.*)\t(.*)\t(Retrieved|Stored)\t(.*)\t(.*) [ap]m/;
 
   /* eslint-disable-next-line class-methods-use-this */
   convert([, name, vehicle, type, location, date]: string[]): VehicleLog {

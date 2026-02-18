@@ -7,7 +7,7 @@ export interface ArmouryLog extends EvidenceLog {
 }
 
 export default class ArmouryLogManager extends EvidenceLogManager {
-  protected regex = /(.*)\t(\+|-)\s*([\d.]+)\t(.*)\t(.*)\t(.*)/;
+  protected regex = /(.*)\t(\+|-)\s*([\d.]+)\t(.*)\t(.*)\t(.*) [ap]m/;
 
   /* eslint-disable-next-line class-methods-use-this */
   convert([line, name, sign, amount, item, identifier, date]: string[]): ArmouryLog {

@@ -80,6 +80,10 @@ export abstract class LogManager<T extends Log> {
     const fulldate = new Date(date.replace(/st|nd|rd|th/, ''));
     const month = fulldate.getMonth() + 1;
 
+    if (Number.isNaN(fulldate.getTime())) {
+      throw new Error('Invalid date format');
+    }
+
     return {
       date: `${fulldate.getFullYear()}-${month < 10 ? '0' : ''}${month}-${fulldate.getDate() < 10 ? '0' : ''}${fulldate.getDate()}`,
       fulldate,

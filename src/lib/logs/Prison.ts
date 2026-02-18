@@ -20,7 +20,7 @@ export interface PrisonLog extends LogCommon {
 }
 
 export default class PrisonLogManager extends LogManager<PrisonLog> {
-  protected regex = /(.*)\t(\d+)\t(\d+)\t(.*)\t(.*)\t(.*)\t(.*)/;
+  protected regex = /(.*)\t(\d+)\t(\d+)\t(.*) [ap]m\t(.*)\t(.*)\t(.*)/;
 
   /* eslint-disable-next-line class-methods-use-this */
   convert([, inmate, reportId, sentenceId, date, action, job, details]: string[]): PrisonLog {

@@ -11,7 +11,7 @@
   } from '@fortawesome/free-solid-svg-icons';
   import FaIcon from 'svelte-fa';
   import { datetime } from '$lib/actions';
-  import { logManager } from '$lib/storage';
+  import { logManager, logs } from '$lib/storage';
   import Help from './Help.svelte';
   import LogFilter from './LogFilter.svelte';
   import LogImporter from './LogImporter.svelte';
@@ -29,7 +29,8 @@
     title: 'Item',
   };
 
-  $: showChanges = $logManager?.type === LogType.Evidence
+  $: showChanges = $logManager?.type === LogType.Armoury
+    || $logManager?.type === LogType.Evidence
     || $logManager?.type === LogType.Prison
     || $logManager?.type === LogType.Vehicle;
   $: if ($logManager?.type === LogType.Prison) {
@@ -48,7 +49,7 @@
 </script>
 
 <Octocat />
-{#if !$logManager}
+{#if !$logs.length}
   <section class="hero is-fullheight is-hidden-touch">
     <div class="hero-body is-flex-direction-column is-justify-content-center">
       <div class="box p-5">

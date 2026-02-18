@@ -16,7 +16,7 @@ export interface EvidenceLog extends LogCommon {
 }
 
 export default class EvidenceLogManager extends LogManager<EvidenceLog> {
-  protected regex = /(.*)\t(\+|-)\s*(\d+)\t(.*?)\t(.*)/;
+  protected regex = /(.*)\t(\+|-)\s*(\d+)\t(.*?)\t(.*) [ap]m/;
 
   /* eslint-disable-next-line class-methods-use-this */
   convert([, name, sign, amount, item, date]: string[]): EvidenceLog {
