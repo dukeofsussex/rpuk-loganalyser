@@ -120,7 +120,7 @@
                 <span class="is-flex-grow-1">
                   {column.name}
                 </span>
-                <FaIcon icon={sortIcons[index]} />
+                <FaIcon class="ml-2" icon={sortIcons[index]} />
               </span>
             </th>
           {/each}
